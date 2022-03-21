@@ -3,11 +3,12 @@ import { KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard } fr
 import styles from './KeyboardAvoidingView.style';
 
 
-const MyKeyboardAvoidingView = ({children}) => {
+const MyKeyboardAvoidingView = ({children, keyboardVerticalOffset}) => {
     return (  
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.container}
+            keyboardVerticalOffset={keyboardVerticalOffset}
         
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

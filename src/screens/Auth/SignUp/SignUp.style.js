@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     },
     logo:{
         width:Dimensions.get('screen').width/1.2,
-        height:220,
+        height:Dimensions.get('screen').height/4,
         backgroundColor:'transparent',
     },
     modalContainer:{
@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
         backgroundColor:'#d0e1d0', 
         borderTopLeftRadius:38, 
         borderTopRightRadius:38,  
-        paddingBottom:30, 
         paddingTop:30, 
         justifyContent:'space-evenly',
     },
@@ -58,16 +57,18 @@ const styles = StyleSheet.create({
         alignItems:'center',
         height:45,
     },
-    textInputPassword:{},
-    signUpContainer:{
+    textInputPassword:{
+        flex:1,
+    },
+    loginContainer:{
         flexDirection:'row', 
-        justifyContent:'center'
+        justifyContent:'center',
     },
     isMember:{ 
         color:'#8c8c8c', 
         fontWeight:'600'
     },
-    signUp:{
+    login:{
         color:'#59835e', 
         fontWeight:'bold'
     },

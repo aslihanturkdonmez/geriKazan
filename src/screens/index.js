@@ -1,3 +1,4 @@
-import {Login, Register} from './Auth';
+import {Login, SignUp} from './Auth';
+import Home from './Home';
 
-export {Login, Register};
+export {Login, SignUp, Home};
