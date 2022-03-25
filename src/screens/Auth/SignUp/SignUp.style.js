@@ -10,21 +10,22 @@ const styles = StyleSheet.create({
         textAlign:'center',
     },
     imgContainer:{
-        flex:1,
         alignItems:'center', 
-        justifyContent:'center'
+        justifyContent:'flex-start',
     },
     logo:{
         width:Dimensions.get('screen').width/1.2,
-        height:Dimensions.get('screen').height/4,
-        backgroundColor:'transparent',
+        marginVertical:25,
     },
     modalContainer:{
-        flex:1, 
+        flexGrow:2, 
         backgroundColor:'#d0e1d0', 
         borderTopLeftRadius:38, 
         borderTopRightRadius:38,  
-        paddingTop:30, 
+        paddingTop:15, 
+    },
+    scrollContainer:{
+        flexGrow:1,
         justifyContent:'space-evenly',
     },
     loginText:{
@@ -38,7 +39,20 @@ const styles = StyleSheet.create({
     },
     textInputContainer:{
     },
-    textInputMail:{
+    nameInputContainer:{ 
+        flexDirection: 'row', 
+        marginHorizontal: 30 
+    },
+    textInputName:{
+        marginVertical:10,
+        borderRadius:9,
+        backgroundColor:'#fff',
+        padding:12,
+        height:45,
+        marginRight:10,
+        paddingRight:53,
+    },
+    textInput:{
         marginHorizontal:30,
         marginVertical:10,
         borderRadius:9,
