@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { View, Pressable } from 'react-native';
 import {Text, TextInput, KeyboardAvoidingView, Image} from '../../../components';
+import { authentication } from '../../../services';
 import styles from './Login.style';
 
 const Login = ({navigation}) => {
@@ -10,6 +11,13 @@ const Login = ({navigation}) => {
 
     const passwordVisibility = () => {
         setShowPassword(!showPassword);
+    }
+
+    const handleLoginPress =async () => {
+        const loginResponse= await authentication.signIn(mail, password);
+        if(loginResponse === 1){
+            //redux state güncellenecek
+        }
     }
     
     return (
@@ -32,19 +40,19 @@ const Login = ({navigation}) => {
                                 onChangeText={setPassword}
                                 value={password}
                                 placeholder="Şifrenizi Giriniz"
-                                secureTextEntry={showPassword}
+                                secureTextEntry={!showPassword}
                                 style={[styles.textInputPassword, {flex:1}]}
                             />
                             <Pressable onPress={passwordVisibility}>
-                                <Text style={{fontSize:10}}>{showPassword ? 'Göster' : 'Gizle'}</Text>
+                                <Text style={{fontSize:10}}>{!showPassword ? 'Göster' : 'Gizle'}</Text>
                             </Pressable>
                         </View>
-                        <Pressable style={{backgroundColor:'#59835e', alignItems:'center', marginHorizontal:30, marginTop:20, borderRadius:8, paddingVertical:5, }}>
+                        <Pressable onPress={handleLoginPress} style={{backgroundColor:'#59835e', alignItems:'center', marginHorizontal:30, marginTop:20, borderRadius:8, paddingVertical:5, }}>
                             <Text style={{fontSize:24, fontWeight:'bold', color:'white'}}>Giriş</Text>
                         </Pressable>
                     </View>
                     <View style={styles.signUpContainer}>
-                        <Text style={styles.isMember}>Üye değil misin?</Text>
+                        <Text style={styles.isMember} >Üye değil misin?</Text>
                         <Pressable onPress={() => navigation.navigate('SignUp')}>
                             <Text style={styles.signUp} > Üye Ol</Text>
                         </Pressable>

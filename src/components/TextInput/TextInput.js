@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextInput } from 'react-native';
 
-const MyTextInput = ({onChangeText, text, style, placeholder, secureTextEntry}) => {
+const MyTextInput = ({onChangeText, text, style, placeholder, secureTextEntry, multiline}) => {
     return (  
         <TextInput 
             onChangeText={onChangeText}
@@ -9,6 +9,7 @@ const MyTextInput = ({onChangeText, text, style, placeholder, secureTextEntry}) 
             style={style}
             placeholder={placeholder}
             secureTextEntry={secureTextEntry}
+            multiline={multiline}
         />
     );
 }

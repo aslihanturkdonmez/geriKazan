@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import { View, Pressable , ScrollView} from 'react-native';
 import {Text, TextInput, KeyboardAvoidingView, Image} from '../../../components';
 import styles from './SignUp.style';
+import { authentication, database } from '../../../services';
+import { firebase } from '@react-native-firebase/auth';
 
 const SignUp = ({navigation}) => {
     const [mail, setMail] = useState(null);
@@ -21,6 +23,27 @@ const SignUp = ({navigation}) => {
     const passwordVisibilityRe = () => {
         setShowPasswordRe(!showPasswordRe);
     }
+
+    const handleRegister = async() => {
+        const signUpResponse=await authentication.createUser(mail, password);
+        //İşlem başarılı
+        if(signUpResponse === 1){
+            //Firestore işlemleri
+            const userObject= {
+                mail,
+                name,
+                surname,
+                profilePicture: null,
+            }
+
+            //console.log(authentication.getCurrentUserId());
+            database.user.createUser(authentication.getCurrentUser().uid, userObject)
+            //authentication.signOut();
+        }else{
+            console.log("hata mesajı");
+            console.log(signUpResponse)
+        }
+    }
     
     return (
         <View style={styles.container}>
@@ -31,7 +54,7 @@ const SignUp = ({navigation}) => {
                 <View style={styles.modalContainer}>
                     <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View>
-                            <TextInput
+{/*                             <TextInput
                                 onChangeText={setName}
                                 value={name}
                                 placeholder="Adınızı Giriniz"
@@ -42,7 +65,7 @@ const SignUp = ({navigation}) => {
                                 value={surname}
                                 placeholder="Soyadınızı Giriniz"
                                 style={styles.textInput}
-                            />
+                            /> */}
                             <TextInput
                                 onChangeText={setMail}
                                 value={mail}
@@ -54,11 +77,11 @@ const SignUp = ({navigation}) => {
                                     onChangeText={setPassword}
                                     value={password}
                                     placeholder="Şifrenizi Giriniz"
-                                    secureTextEntry={showPassword}
+                                    secureTextEntry={!showPassword}
                                     style={[styles.textInputPassword]}
                                 />
                                 <Pressable onPress={passwordVisibility}>
-                                    <Text style={{ fontSize: 10 }}>{showPassword ? 'Göster' : 'Gizle'}</Text>
+                                    <Text style={{ fontSize: 10 }}>{!showPassword ? 'Göster' : 'Gizle'}</Text>
                                 </Pressable>
                             </View>
                             <View style={styles.passwordContainer}>
@@ -66,15 +89,15 @@ const SignUp = ({navigation}) => {
                                     onChangeText={setPasswordRe}
                                     value={passwordRe}
                                     placeholder="Şifrenizi Tekrar Giriniz"
-                                    secureTextEntry={showPasswordRe}
+                                    secureTextEntry={!showPasswordRe}
                                     style={[styles.textInputPassword]}
                                 />
                                 <Pressable onPress={passwordVisibilityRe}>
-                                    <Text style={{ fontSize: 10 }}>{showPasswordRe ? 'Göster' : 'Gizle'}</Text>
+                                    <Text style={{ fontSize: 10 }}>{!showPasswordRe ? 'Göster' : 'Gizle'}</Text>
                                 </Pressable>
                             </View>
                         </View>
-                        <Pressable style={{ backgroundColor: '#59835e', alignItems: 'center', marginHorizontal: 30, marginTop: 10, borderRadius: 8, paddingVertical: 5, }}>
+                        <Pressable onPress={handleRegister} style={{ backgroundColor: '#59835e', alignItems: 'center', marginHorizontal: 30, marginTop: 10, borderRadius: 8, paddingVertical: 5, }}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }}>Kayıt Ol</Text>
                         </Pressable>
                         <View style={styles.loginContainer}>
@@ -90,5 +113,5 @@ const SignUp = ({navigation}) => {
         </View>
       );
 }
- 
+
 export default SignUp;
