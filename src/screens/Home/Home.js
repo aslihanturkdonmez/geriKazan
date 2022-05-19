@@ -16,10 +16,13 @@ const Home = () => {
     useEffect(() => {
 
         setCurrentUser();
-        getPosts();
+        //getPosts();
     
       return () => {
-        
+        //getPosts();
+
+        //Bu router'a tasınacak. Hata veriyor.
+        setCurrentUser();
       }
     }, []);
 
@@ -43,13 +46,12 @@ const Home = () => {
             }
         }));
 
-        //console.log(mutData);
+        console.log(mutData);
         setPosts(mutData);
 
     }
 
     const setCurrentUser = async() => {
-        
         const {_data: user}= await database.user.getUser(uid);
         dispatch(setUser(user));
     }
