@@ -48,7 +48,7 @@ const SignUp = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.imgContainer}>
-                <Image source={require('../../../resources/geriKazanLogo2.png')} style={styles.logo} resizeMode="contain" />
+                <Image source={require('../../../resources/assets/geriKazanLogo.png')} style={styles.logo} resizeMode="contain" />
             </View>
             <KeyboardAvoidingView keyboardVerticalOffset={25}>
                 <View style={styles.modalContainer}>

@@ -3,9 +3,9 @@ import storage from '@react-native-firebase/storage';
 import authentication from '../authentication/authentication';
 
 const getAllPosts = async () => {
-    const allPosts =  await firestore().collection('Posts')
+    const allPosts = firestore().collection('Posts')
 
-    const posts=allPosts.get().then((querySnapshot)=> {
+    const posts=await allPosts.get().then((querySnapshot)=> {
         const tempDoc = querySnapshot.docs.map((doc) => {
             return { id: doc.id, ...doc.data() }
           });
@@ -13,28 +13,39 @@ const getAllPosts = async () => {
           return tempDoc;
     })
 
-    //console.log(posts);
     return posts;
 }
 
-const createPost = async ({text, localUri}) => {
+const createPost = async ({title, description, price , city, state, localUri}) => {
     
-    let remoteUri;
+    let remoteUri=[];
+
+    //console.log(localUri);
     
     if(localUri){
-        remoteUri = await uploadPhoto(localUri);
+
+        const imgArray=await Promise.all(localUri.map(async(uri, index)=>{
+            const rUri=await uploadPhoto(uri["img"+index]);
+            return rUri;
+        }));
+
+        remoteUri=imgArray;
     }
 
     return new Promise ((res, rej) => {
             firestore()
             .collection('Posts')
             .add({
-                text,
+                title,
+                description,
+                price,
+                city,
+                state,
                 uid:authentication.getCurrentUser().uid,
                 timestamp: Date.now(),
-                image: remoteUri || null,
-                likeCount:0,
-                commentCount:0,
+                images: remoteUri || null,
+                favCount:0,
+                //commentCount:0,
             })
             .then((ref) => {
                 console.log("post added");
@@ -56,7 +67,7 @@ const uploadPhoto = async (uri) => {
         
         let upload = storage().ref(path).put(file);
 
-        console.log(upload);
+        //console.log(upload);
 
         upload.on(
             "state_changed",

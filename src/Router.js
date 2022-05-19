@@ -120,7 +120,8 @@ const Router = () => {
                     name='AddProduct' 
                     component={AddProduct} 
                     options={{
-                        headerTitle:'Ürün Ekle'
+                        headerTitle:'Ürün Ekle',
+                        headerShown:false,
                     }}
                 />
             </Stack.Navigator>

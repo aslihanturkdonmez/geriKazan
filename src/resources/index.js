@@ -1,3 +1,4 @@
 import {colors} from './colors';
+import cityState from './cityState';
 
-export {colors};
+export {colors, cityState};

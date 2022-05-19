@@ -4,7 +4,7 @@ import Text from '../Text';
 
 const PostCard = ({data}) => {
     return (  
-        <View style={{margin:10, backgroundColor:'red'}}>
+        <View style={{margin:10, backgroundColor:'yellow'}}>
             <Text>{data.text}</Text>
         </View>
     );

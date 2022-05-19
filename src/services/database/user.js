@@ -11,8 +11,23 @@ const createUser = (uid, userObj) => {
 };
 
 const getUser = async(uid) => {
-    const user = await firestore().collection('Users').doc(uid).get();
+    let user = await firestore().collection('Users').doc(uid).get();
+    let pair={uid: uid}
+    user._data={...user._data, ...pair}
+    //console.log(user._data);
+    //user["_data"]["uid"]=uid;
     return user;
 }
 
-export default {createUser, getUser};
+const editUser = async(uid, user) => {
+    console.log(uid)
+    firestore()
+    .collection('Users')
+    .doc(uid)
+    .update(user)
+    .then(() => {
+        console.log("user updated");
+    })
+}
+
+export default {createUser, getUser, editUser};

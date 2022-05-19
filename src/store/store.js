@@ -8,6 +8,7 @@ const store= createStore(rootReducer);
 store.subscribe(() => {
     console.log("subscribe calisti");
     console.log(store.getState().user);
+    console.log("subscribe calisti2");
     storage.setFavorites(store.getState().favorites.favList);
 });
 
