@@ -1,18 +1,24 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Pressable } from 'react-native';
-import { Icon, Image, Text, TextInput } from '../../components';
-import {authentication, database} from '../../services';
+import { Icon, Image, Text, TextInput } from '../../../components';
+import {authentication, database} from '../../../services';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeUser, setUser as setUserToRedux } from '../../store/actions/UserAction';
+import { removeUser, setUser as setUserFromRedux } from '../../../store/actions/UserAction';
 import * as ImagePicker from 'react-native-image-picker';
 import { useFocusEffect } from '@react-navigation/native';
 
-
 const Account = () => {
-    const {user: userInfo}=useSelector(state => state.user);
+    const userInfo=useSelector(state => state.user);
     const [user, setUser] = useState(userInfo);
     const [updateSuccess, setUpdateSuccess] = useState(undefined);
-    const [mail, setMail] = useState(userInfo.mail)
+    const [mail, setMail] = useState(userInfo.mail);
+    const [name, setName] = useState(userInfo.name);
+    const [surname, setSurname] = useState(userInfo.surname);
+    //const [password, setPassword] = useState(null);
+    //const [passwordRe, setPasswordRe] = useState(null);
+    //const [showPassword, setShowPassword] = useState(false);
+    //const [showPasswordRe, setShowPasswordRe] = useState(false);
+
 
     const dispatch = useDispatch();
 
@@ -32,25 +38,29 @@ const Account = () => {
         dispatch(removeUser());
     }
 
-    const pickImage = () => {
+    const pickImage = async () => {
         const options = {
             maxHeight: 500,
             maxWidth: 500,
-            selectionLimit: 0,
+            selectionLimit: 1,
             mediaType: 'photo',
             includeBase64: false,
         };
 
-        ImagePicker.launchImageLibrary(options, response => {   
+        ImagePicker.launchImageLibrary(options, async( response) => {   
             const source = response.assets[0].uri;
-            setUser({...user, profilePicture:source})            
+
+            const remoteUri=await database.user.uploadPhoto(user.uid, source);
+
+            console.log(remoteUri)
+            setUser({...user, profilePicture:remoteUri});
           });
     }
 
     const saveUserInfo = () => {
         database.user.editUser(user.uid, user)
         .then(()=>{
-            dispatch(setUserToRedux(user))
+            dispatch(setUserFromRedux(user))
             setUpdateSuccess(true);
         })
         .catch(()=>{
@@ -90,7 +100,7 @@ const Account = () => {
                     value={mail}
                     onChangeText={setMail}
                 />
-{/*                 <TextInput 
+                {/*                 <TextInput 
                     placeholder={user?.mail}
                     //value={user.mail}
                 /> */}
@@ -103,6 +113,49 @@ const Account = () => {
             <Pressable onPress={saveUserInfo}>
                 <Text>Bilgileri Kaydet</Text>
             </Pressable>
+
+
+            {/* 
+            
+            <View style={styles.menu}>
+                <Pressable style={styles.menuCard}>
+                    <Icon 
+                        icon={'person-outline'}
+                        size={18}
+                        color={'#000'}
+                    />
+                    <Text style={styles.menuText}>Profilim</Text>
+                </Pressable>
+                <Pressable style={styles.menuCard}>
+                    <Icon 
+                        icon={'cart-outline'}
+                        size={18}
+                        color={'#000'}
+                    />
+                    <Text style={styles.menuText}>Ürünlerim</Text >
+                </Pressable>
+                <Pressable style={styles.menuCard}>
+                    <Icon
+                        icon={'settings-outline'}
+                        size={18}
+                        color={'#000'}
+                    />
+                    <Text style={styles.menuText}>Ayarlar</Text >
+                </Pressable>
+                <Pressable style={[styles.menuCard, {borderBottomWidth:0.2,}]}>
+                    <Icon   
+                        icon={'ios-exit-outline'}
+                        size={18}
+                        color={'#000'}
+                    />
+                    <Text style={styles.menuText}>Çıkış Yap</Text >
+                </Pressable>
+            </View>
+            
+            
+            */}
+
+
                 
         </View>
      );

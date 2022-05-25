@@ -17,7 +17,7 @@ export const removeFav = (id) => {
 
 export const setFavs = (favs) => {
     return {
-        type:types.SET_FAVS,
-        payload: favs,
+        type: types.SET_FAVS,
+        payload: favs
     }
-}
+};

@@ -1,4 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import authentication from '../authentication/authentication';
 
 const createUser = (uid, userObj) => {
     firestore()
@@ -20,7 +22,6 @@ const getUser = async(uid) => {
 }
 
 const editUser = async(uid, user) => {
-    console.log(uid)
     firestore()
     .collection('Users')
     .doc(uid)
@@ -30,4 +31,30 @@ const editUser = async(uid, user) => {
     })
 }
 
-export default {createUser, getUser, editUser};
+
+const uploadPhoto = async (uid, uri) => {
+    const path=`profilePhotos/${uid}/${Date.now()}.jpg`;
+
+    return new Promise(async (res, rej) => {
+        const response= await fetch(uri);
+        const file=await response.blob();
+
+        let upload = storage().ref(path).put(file);
+
+        upload.on(
+            "state_changed",
+            snapshot => {},
+            err => {
+                rej(err);
+            },
+            async () => {
+                const url = await upload.snapshot.ref.getDownloadURL();
+                res(url);
+            }
+        );
+
+    });
+}
+
+
+export default {createUser, getUser, editUser, uploadPhoto};

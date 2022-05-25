@@ -5,6 +5,8 @@ import Image from "./Image";
 import PostCard from "./PostCard";
 import Icon from './Icon';
 import Header from "./Header";
+import FavBadge from "./FavBadge";
+import Menu from "./Menu";
 
 export {
     Text, 
@@ -14,5 +16,7 @@ export {
     PostCard,
     Icon,
     Header,
+    FavBadge,
+    Menu,
     
 }

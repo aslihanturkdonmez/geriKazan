@@ -1,24 +1,13 @@
 import * as types from '../actions/types';
 
-
-const initialState = {
-    user: {},
-}
-
-const UserReducer = (state=initialState.user, action) => {
+const UserReducer = (state=undefined, action) => {
     switch (action.type) {
 
         case types.SET_USER:
-            return {
-                ...state,
-                user: action.payload
-            };
+            return action.payload;
         
         case types.REMOVE_USER:
-            return {
-                ...state,
-                user: undefined
-            }
+            return {user: undefined};
             
         default:
             return {

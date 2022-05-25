@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import authentication from '../authentication/authentication';
 
@@ -20,15 +20,12 @@ const createPost = async ({title, description, price , city, state, localUri}) =
     
     let remoteUri=[];
 
-    //console.log(localUri);
-    
     if(localUri){
 
         const imgArray=await Promise.all(localUri.map(async(uri, index)=>{
             const rUri=await uploadPhoto(uri["img"+index]);
             return rUri;
         }));
-
         remoteUri=imgArray;
     }
 
@@ -89,4 +86,16 @@ const getPost = async (id) => {
     return post;
 }
 
-export default {getAllPosts, createPost, getPost, uploadPhoto};
+const setFavCount = (id, value) => {
+    firestore()
+    .collection('Posts')
+    .doc(id)
+    .update({
+        favCount: firebase.firestore.FieldValue.increment(value)
+    })
+    .then(() => {
+        console.log("fav count updated");
+    });
+}
+
+export default {getAllPosts, createPost, getPost, uploadPhoto, setFavCount};

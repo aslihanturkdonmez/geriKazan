@@ -5,31 +5,21 @@ const initialState = {
     favList: [],
 }
 
-const FavoriteReducer = (state=initialState.favList, action) => {
+const FavoriteReducer = (state=[], action) => {
     switch (action.type) {
 
         case types.ADD_FAV:
-            return {
-                ...state,
-                favList:[...state.favList, action.payload]
-            };
+            return  [...state, action.payload];
+
         
         case types.REMOVE_FAV:
-            return {
-                ...state,
-                favList: state.favList.filter(fav => action.payload !== fav.id)
-            }
-        
+            return state.filter(fav => action.payload !== fav.id);
+
         case types.SET_FAVS:
-            return {
-                ...state,
-                favList: action.payload || []
-            }
+            return action.payload || [];
             
         default:
-            return {
-                ...state,
-            };
+            return state;
     }
 }
  

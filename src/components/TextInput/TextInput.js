@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextInput } from 'react-native';
 
-const MyTextInput = ({onChangeText, value, style, placeholder, secureTextEntry, multiline, placeholderTextColor}) => {
+const MyTextInput = ({onChangeText, value, style, placeholder, secureTextEntry, multiline, placeholderTextColor, keyboardType }) => {
     return (  
         <TextInput 
             onChangeText={onChangeText}
@@ -11,6 +11,7 @@ const MyTextInput = ({onChangeText, value, style, placeholder, secureTextEntry, 
             secureTextEntry={secureTextEntry}
             multiline={multiline}
             placeholderTextColor={placeholderTextColor}
+            keyboardType={keyboardType}
         />
     );
 }

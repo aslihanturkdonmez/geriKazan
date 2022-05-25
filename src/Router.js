@@ -2,9 +2,13 @@ import React, {useState, useEffect} from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {Login, SignUp, Home, Account, Favorities, Messages, AddProduct} from './screens';
+import {Login, SignUp, Home, Favorites, Messages, AddProduct, ProductDetail, MyProducts, Account, Profile, Settings} from './screens';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import auth from '@react-native-firebase/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFavs, setFavs } from './store/actions/FavoritesActions';
+import { authentication, database } from './services';
+import { setUser } from './store/actions/UserAction';
 
 /* const MyTheme = {
     ...DefaultTheme,
@@ -25,13 +29,13 @@ const giveIcon = ({ route, focused, color, size }) => {
             iconName = focused ? 'md-home-sharp' : 'md-home-outline';
             break; 
             
-        case 'Favorities':
+        case 'Favorites':
             iconName = focused ? 'md-heart-sharp' : 'md-heart-outline';
             break;
         case 'Messages':
             iconName= focused ? 'md-chatbox' : 'md-chatbox-outline'
             break;
-        case 'Account':
+        case 'AccountStack':
             iconName=focused ? 'person-circle-sharp' : 'person-circle-outline'
             break;
         case 'BottomAddProduct':
@@ -43,16 +47,33 @@ const giveIcon = ({ route, focused, color, size }) => {
   };
 
 const Router = () => {
-    const [user, setUser] = useState();
+    const user=authentication.getCurrentUser();
+    const [userFlag, setUserFlag] = useState(user);
 
-    const onAuthStateChanged = (user) => {
-        setUser(user);
-    }
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        setCurrentUser();
+        getFavs();
+
         return subscriber;
-      }, []);
+    }, [user]);
+    
+    const onAuthStateChanged = (user) => {
+        setUserFlag(user);
+    }
+    
+    const setCurrentUser = async() => {
+        const {_data: userFromDb}= await database.user.getUser(user?.uid);
+        dispatch(setUser(userFromDb));
+    }
+
+    
+    const getFavs = async() => {
+        const favs=await database.user_favs.getUserFavs(user?.uid);
+        dispatch(setFavs(favs));
+    }
 
     const AuthStack = () => {
         return (
@@ -63,8 +84,33 @@ const Router = () => {
         )
     }
 
+    const AccountStack = () => {
+        return (
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+                <Stack.Screen name='Account' component={Account} />
+                <Stack.Screen name='MyProducts' component={MyProducts} />
+                <Stack.Screen name='Profile' component={Profile} />
+                <Stack.Screen name='Settings' component={Settings} />
+            </Stack.Navigator>
+        )
+    }
+
     const AddProductBase = () => <View style={{ flex: 1, backgroundColor: "red" }} />
 
+
+    const HomeStack = () => {
+        return (
+            <Stack.Navigator 
+                screenOptions={{
+                    headerShown: false,
+                }}
+            >
+                <Stack.Screen name='HomeScreen' component={Home} />
+                <Stack.Screen name='ProductDetail' component={ProductDetail} />
+
+            </Stack.Navigator>
+        )
+    }
 
     const AppTabNavigator = () => {
         return (
@@ -77,14 +123,14 @@ const Router = () => {
             >
                 <Tab.Screen 
                     name='Home' 
-                    component={Home} 
+                    component={HomeStack} 
                 />
                 <Tab.Screen 
-                    name='Favorities' 
-                    component={Favorities} 
+                    name='Favorites' 
+                    component={Favorites} 
                 />
                 <Tab.Screen 
-                    name='BottomAddProduct' 
+                    name='BottomAddProduct'
                     component={AddProductBase}
                     listeners={({navigation}) => ({
                         tabPress: (e) => {
@@ -99,8 +145,8 @@ const Router = () => {
                     component={Messages} 
                 />
                 <Tab.Screen 
-                    name='Account' 
-                    component={Account} 
+                    name='AccountStack' 
+                    component={AccountStack} 
                 />
             </Tab.Navigator>
         )
@@ -130,7 +176,7 @@ const Router = () => {
 
     return ( 
         <NavigationContainer /* theme={MyTheme} */>
-            { !user ?
+            { !userFlag ?
                 <AuthStack />
             :
                 <MainNavigator />

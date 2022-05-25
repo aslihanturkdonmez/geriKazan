@@ -54,7 +54,7 @@ const SignUp = ({navigation}) => {
                 <View style={styles.modalContainer}>
                     <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View>
-{/*                             <TextInput
+                            <TextInput
                                 onChangeText={setName}
                                 value={name}
                                 placeholder="Adınızı Giriniz"
@@ -65,7 +65,7 @@ const SignUp = ({navigation}) => {
                                 value={surname}
                                 placeholder="Soyadınızı Giriniz"
                                 style={styles.textInput}
-                            /> */}
+                            />
                             <TextInput
                                 onChangeText={setMail}
                                 value={mail}

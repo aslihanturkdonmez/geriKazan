@@ -6,9 +6,9 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {database} from '../../services';
 import {Picker} from '@react-native-picker/picker';
 import {cityState} from '../../resources';
+import { useSelector } from 'react-redux';
 
 const AddProduct = ({navigation}) => {
-    const [text, setText] = useState("");
     const [images, setImages] = useState([]);
     const [description, setDescription] = useState("");
     const [title, setTitle] = useState("");
@@ -18,9 +18,11 @@ const AddProduct = ({navigation}) => {
     const [selectedState, setSelectedState] = useState(null);
     const [cityPickerFocus, setCityPickerFocus] = useState(false);
     const [statePickerFocus, setStatePickerFocus] = useState(false);
-/*     useEffect(() => {
-      console.log(cityState);
-    }, []) */
+    
+    const user=useSelector(state => state.user);
+    useEffect(() => {
+      console.log(user);
+    }, [user])
     
 
     const toggleSwitch = () => {
@@ -81,9 +83,8 @@ const AddProduct = ({navigation}) => {
             console.log(err);
         });
 
+        //navigation.navigate()
         navigation.goBack();
-
-
     }
 
     const renderImages = ({item, index}) => {
@@ -189,8 +190,9 @@ const AddProduct = ({navigation}) => {
                         style={{ marginBottom:22,paddingHorizontal: 17, backgroundColor:'#ececec', fontWeight:'bold', borderRadius:8, fontSize:16}}
                         placeholder="Fiyat*"
                         value={price}
-                        onChangeText={(text) => text.charAt(0) !== '₺' && text.trim()!=="" ? setPrice('₺'+text) : setPrice(text)}
+                        onChangeText={setPrice}
                         placeholderTextColor={'black'}
+                        keyboardType='number-pad'
                         />
                     }
 
