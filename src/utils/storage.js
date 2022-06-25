@@ -26,4 +26,27 @@ const getFavorites = async () => {
     }
 }
 
-export default {getFavorites, setFavorites}
+const setIsUserFirstRun = async() => {
+    try {
+
+        await AsyncStorage.setItem('@user_run', JSON.stringify(true));
+        
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getIsUserFirstRun = async () => {
+    try {
+        const results= await AsyncStorage.getItem('@user_run');
+        if(results){
+            return JSON.parse(results);
+        }
+        return undefined;
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+export default {getFavorites, setFavorites, setIsUserFirstRun, getIsUserFirstRun}

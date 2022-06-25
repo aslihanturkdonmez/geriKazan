@@ -28,7 +28,7 @@ const editUser = async(uid, user) => {
     .update(user)
     .then(() => {
         console.log("user updated");
-    })
+    });
 }
 
 
@@ -56,5 +56,15 @@ const uploadPhoto = async (uid, uri) => {
     });
 }
 
+const deleteAccount = (user_id) => {
+    firestore()
+    .collection('Users')
+    .doc(user_id)
+    .delete()
+    .then(() => {
+        console.log('User deleted!');
+    });
+}
 
-export default {createUser, getUser, editUser, uploadPhoto};
+
+export default {createUser, getUser, editUser, uploadPhoto, deleteAccount};

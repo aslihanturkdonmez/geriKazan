@@ -10,13 +10,13 @@ const styles = StyleSheet.create({
         marginTop:10,
     },
     profilePic:{
-        width:50, 
-        height:50, 
+        width:103, 
+        height:103, 
         borderRadius:60,
     },
     defaultProfilePicContainer:{
-        width:113, 
-        height:113, 
+        width:103, 
+        height:103, 
         backgroundColor:'purple', 
         borderRadius:68, 
         alignItems:'center', 
@@ -28,13 +28,43 @@ const styles = StyleSheet.create({
         fontSize:40,
     },
     editProfilePicIcon:{
-        backgroundColor:'#cdcdcd', 
+        backgroundColor:'#c2c2c2', 
         position: 'absolute', 
         zIndex: 1, 
-        left:220, 
-        top:85, 
+        left:200, 
+        top:70, 
         borderRadius:20, 
         padding:4 
+    },
+    menuCard:{
+        flexDirection:'row',
+        alignItems:'center',
+        paddingRight:15,
+    },
+    icon:{
+        marginRight:8,
+    },
+    menuText:{
+        fontSize:18, 
+        marginLeft: 5,
+        color:'#000',
+    },
+    menu:{
+        elevation:8,
+        shadowColor:'#000',
+        borderColor:'#fff',
+        //padding:6,
+        backgroundColor:'#fff',
+        marginVertical:20,
+    },
+    cardWrapper: {
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between',
+        borderBottomWidth:0.2,
+        borderTopWidth:0.2,
+        borderColor:'#cecece',
+        padding:15,
     },
 
 });

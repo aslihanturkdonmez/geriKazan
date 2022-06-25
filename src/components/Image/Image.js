@@ -1,24 +1,29 @@
-import React from 'react';
-import { Image } from 'react-native';
-import FastImage from 'react-native-fast-image'
+import React, { useState } from 'react';
+import { Image, View, ActivityIndicator } from 'react-native';
+import FastImage from 'react-native-fast-image';
+
 
 const MyImage = ({style, source, resizeMode, cache }) => {
+    const [loading, setLoading] = useState(true);
+
     return (
         cache ?
-        <FastImage 
-            style={style}
-            source={{
-                cache:FastImage.cacheControl.immutable,
-                uri:source
-            }}
-            resizeMode={FastImage.resizeMode[resizeMode]}
-        />
+            <FastImage 
+                style={style}
+                source={{
+                    cache:FastImage.cacheControl.immutable,
+                    uri:source
+                }}
+                resizeMode={FastImage.resizeMode[resizeMode]}
+                onLoadEnd={() => {setLoading(false)}}
+            />
         :
-        <Image
-            style={style}
-            source={source}
-            resizeMode={resizeMode}
-        />
+            <Image
+                source={source}
+                resizeMode={resizeMode}
+                onLoadEnd={() => {setLoading(false)}}
+                style={style}
+            />
     );
 }
 

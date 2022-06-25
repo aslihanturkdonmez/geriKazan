@@ -28,8 +28,8 @@ const signIn = async (mail, password) => {
     return signInResponse;
 }
 
-const signOut = () => {
-    auth()
+const signOut =async () => {
+    await auth()
     .signOut()
     .then(() => {
             console.log('User signed out!')
@@ -41,5 +41,9 @@ const getCurrentUser = () => {
     return auth().currentUser;
 }
 
+const deleteAccount = () => {
+    auth().currentUser.delete();
+}
 
-export default {createUser, signIn, signOut, getCurrentUser};
+
+export default {createUser, signIn, signOut, getCurrentUser, deleteAccount};

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Pressable, FlatList, ScrollView, Switch } from 'react-native';
-import { Image, Text, TextInput, Header, Icon } from '../../components';
+import { View, Pressable, FlatList, ScrollView, Switch, Modal, Dimensions } from 'react-native';
+import { Image, Text, TextInput, Header, Icon, LoadingAnimation } from '../../components';
 //import * as ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import {database} from '../../services';
@@ -18,10 +18,13 @@ const AddProduct = ({navigation}) => {
     const [selectedState, setSelectedState] = useState(null);
     const [cityPickerFocus, setCityPickerFocus] = useState(false);
     const [statePickerFocus, setStatePickerFocus] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const {width, height}=Dimensions.get('screen');
+
     
     const user=useSelector(state => state.user);
     useEffect(() => {
-      console.log(user);
     }, [user])
     
 
@@ -47,26 +50,10 @@ const AddProduct = ({navigation}) => {
 
             setImages(temp_img)
           });
-
-          //console.log(images);
-
-/*         const options = {
-            maxHeight: 500,
-            maxWidth: 500,
-            selectionLimit: 0,
-            mediaType: 'photo',
-            includeBase64: false,
-        };
-
-        ImagePicker.launchImageLibrary(options, response => { 
-            console.log(response.assets);  
-            const source = response.assets[0].uri;
-            setImage(source);
-            
-          }); */
     }
 
     const handlePost = () => {
+        setLoading(true);
         database.posts.createPost({
             title:title.trim(),
             description: description.trim(),
@@ -76,15 +63,18 @@ const AddProduct = ({navigation}) => {
             localUri: images,
         })
         .then((ref) => {
+            setLoading(false);
+            navigation.goBack();
             setImages(null);
             setDescription("");
         })
         .catch((err) => {
             console.log(err);
+            setLoading(false);
         });
 
         //navigation.navigate()
-        navigation.goBack();
+        
     }
 
     const renderImages = ({item, index}) => {
@@ -112,7 +102,11 @@ const AddProduct = ({navigation}) => {
                         />
                     </Pressable>
                     <Text style={{fontSize:24, fontWeight:'bold', color:'black'}}>İlan Detayı</Text>
-                    <View />
+                    <Icon 
+                        icon={"md-close-sharp"}
+                        size={25}
+                        color='#fff'
+                    />
             </Header>
         )
     }
@@ -138,6 +132,23 @@ const AddProduct = ({navigation}) => {
         )
     } 
 
+    const loadingModal = () => {
+        return (
+            <Modal
+				animationType="fade"
+				transparent={true}
+				visible={loading}
+			>
+				<View style={{alignItems:'center', justifyContent:'center',flex:1, backgroundColor:'rgba(255, 255, 255, 0.6)'}}>
+					<LoadingAnimation
+						source={require('../../resources/assets/loading.json')}
+						style={{alignSelf:'center', width:width/2, height:height/2}}
+					/>
+				</View>
+			</Modal>
+        )
+    }
+
     return (  
         <View style={{flex:1, backgroundColor:'#fff'}}>
             {/* {renderHeaderComponent()} */}
@@ -145,6 +156,10 @@ const AddProduct = ({navigation}) => {
                 stickyHeaderIndices={[0]}
             >
                 {renderHeaderComponent()}
+                {
+                loading &&
+                loadingModal()
+                }
                 <View style={{paddingHorizontal:15, paddingVertical: 10, backgroundColor:'#fefefe'}}>
                     <FlatList
                         data={images}
@@ -210,7 +225,9 @@ const AddProduct = ({navigation}) => {
                     <Picker 
                         selectedValue={selectedCity}
                         onValueChange={(itemValue, itemIndex) =>
-                            setSelectedCity(itemValue)
+                            {
+                                setSelectedCity(itemValue)
+                            }
                         }
                         prompt="Şehir Seçiniz"
                         onFocus={() =>setCityPickerFocus(true)}
@@ -218,7 +235,7 @@ const AddProduct = ({navigation}) => {
                     >
                         {
                             !cityPickerFocus && !selectedCity &&
-                            <Picker.Item label="Şehir seçiniz" value={null} enabled={false} />
+                            <Picker.Item label="Şehir seçiniz" value={null} enabled={false} key={"default"}/>
                         }
                         {cityPickerItemComponent()}
                     </Picker>
@@ -235,16 +252,16 @@ const AddProduct = ({navigation}) => {
                     >
                         {
                             !statePickerFocus && !selectedState &&
-                            <Picker.Item  label="İlçe seçiniz" value={null} enabled={false} />
+                            <Picker.Item  label="İlçe seçiniz" value={null} enabled={false} key={"default"} />
                         }
                         {statePickerItemComponent()}
                     </Picker>
 
                 </View>
             </ScrollView>
-            <Pressable onPress={handlePost} style={{backgroundColor:'red', marginHorizontal:20, marginBottom:20, alignItems:'center', borderRadius:20, paddingVertical:5,}}>
-                <Text style={{fontSize:23, color:'white', fontWeight:'bold'}}>Gönder</Text>
-            </Pressable> 
+            <Pressable onPress={handlePost} style={{backgroundColor:'#59835e', alignItems:'center', marginHorizontal:30, marginTop:20,  marginBottom:20, borderRadius:18, paddingVertical:7, }}>
+                <Text style={{fontSize:24, fontWeight:'bold', color:'white'}}>Gönder</Text>
+            </Pressable>
         </View>
     );
 }

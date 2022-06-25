@@ -2,10 +2,10 @@ import firestore, { firebase } from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import authentication from '../authentication/authentication';
 
-const getAllPosts = async () => {
+const getAllPosts = () => {
     const allPosts = firestore().collection('Posts')
 
-    const posts=await allPosts.get().then((querySnapshot)=> {
+    const posts=allPosts.orderBy('timestamp', 'desc').get().then((querySnapshot)=> {
         const tempDoc = querySnapshot.docs.map((doc) => {
             return { id: doc.id, ...doc.data() }
           });
@@ -82,7 +82,8 @@ const uploadPhoto = async (uri) => {
 }
 
 const getPost = async (id) => {
-    const post = await firestore().collection('Posts').doc(id).get();
+    let post = await firestore().collection('Posts').doc(id).get();
+    post._data={...post._data, ...{id}}
     return post;
 }
 
@@ -98,4 +99,76 @@ const setFavCount = (id, value) => {
     });
 }
 
-export default {getAllPosts, createPost, getPost, uploadPhoto, setFavCount};
+const getUserPosts = (uid) => {
+    const posts=firestore()
+    .collection('Posts')
+    .where('uid' , '==' , uid.toString())
+    .get()
+    .then((querySnapshot)=> {
+        const tempDoc = querySnapshot.docs.map((doc) => {
+            return { id: doc.id, ...doc.data() }
+          });
+
+          return tempDoc;
+    })
+    return posts;
+}
+
+const getFilteredPosts = (leastPrice, mostPrice, city, state) => {
+
+    let query=firestore().collection('Posts');
+
+    if(leastPrice) query=query.where('price' ,'>=', leastPrice);
+    if(mostPrice) query=query.where('price', '<=', mostPrice);
+    if(city) query=query.where('city', '==', city);
+    if(state) query=query.where('state', '==', state);
+
+    if(!leastPrice && !mostPrice) query = query.orderBy('timestamp', 'desc');
+
+    const posts=query.get().then((querySnapshot)=> {
+        const tempDoc = querySnapshot.docs.map((doc) => {
+            return { id: doc.id, ...doc.data() }
+        });
+        return tempDoc;
+    })
+    return posts;
+}
+
+const deletePost = (product_id) => {
+    const del=firestore()
+    .collection('Posts')
+    .doc(product_id)
+    .delete()
+    .then(() => {
+        console.log("post deleted");
+    })
+    return del;
+}
+
+const reportPost = (product_id, user_id) => {
+    const del=firestore()
+    .collection('Report')
+    .doc(product_id)
+    .update({
+        [user_id]: true,
+    })
+    .then(() => {
+        console.log("post report");
+    })
+    return del;
+}
+
+const giveFeedback = (user_id, feedback) => {
+    const del=firestore()
+    .collection('Feedback')
+    .add({
+        user_uid: user_id,
+        feedback,
+    })
+    .then(() => {
+        console.log("post report");
+    })
+    return del;
+}
+
+export default {getAllPosts, createPost, getPost, uploadPhoto, setFavCount, getUserPosts, getFilteredPosts, deletePost, reportPost, giveFeedback};

@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
         alignItems:'center',
         paddingRight:15,
     },
+    innerContainer:{
+        alignItems:'center',
+    }
 });
 
 export default styles;

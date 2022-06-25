@@ -16,8 +16,8 @@ const styles = StyleSheet.create({
         elevation:8,
         shadowColor:'#000',
         shadowRadius:4,
-        backgroundColor:'#fff',
         padding:14,
+        backgroundColor:'#fff',
     },
 
     profileImg:{
@@ -73,14 +73,14 @@ const styles = StyleSheet.create({
     },
     menuCard:{
         flexDirection:'row',
-        alignItems:'center',
+        alignItems:'flex-end',
         paddingRight:15,
     },
     icon:{
         marginRight:8,
     },
     menuText:{
-        fontSize:18, 
+        fontSize:18,
         marginLeft: 5,
         color:'#000',
     }

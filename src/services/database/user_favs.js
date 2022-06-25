@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 
-const setUserFavs = (uid, postId, title, price, image) => {
+const setUserFavs = (uid, postId, title, price, image, advertiser_id) => {
     firestore()
     .collection('User_Favs')
     .doc(uid)
@@ -11,6 +11,7 @@ const setUserFavs = (uid, postId, title, price, image) => {
         title,
         price,
         images:[image],
+        uid:advertiser_id,
     })
     .then(() => {
         console.log('Fav added!');

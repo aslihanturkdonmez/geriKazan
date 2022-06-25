@@ -31,7 +31,6 @@ const Menu = ({menu, iconSize, iconColor, styleContainer, styleCardWrapper, styl
             })
             }
         </View>
-
     );
 }
  

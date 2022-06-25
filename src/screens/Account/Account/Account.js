@@ -1,41 +1,86 @@
-import React, { useState } from 'react';
-import { View, Pressable } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Pressable, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Header, Icon, Image, Menu, Text } from '../../../components';
 import { removeUser } from '../../../store/actions/UserAction';
 import styles from './Account.style';
+import { useFocusEffect } from '@react-navigation/native';
+import {authentication, database} from '../../../services';
+
 
 const Account = ({navigation}) => {
+    
     const dispatch = useDispatch();
     const userInfo=useSelector(state => state.user);
     const [user, setUser] = useState(userInfo);
 
+    useFocusEffect(
+        useCallback(() => {
+            setUser(userInfo);
+        }, [userInfo])
+    );
 
-    const mainMenu = [
-        {id:1, title: 'Profilim', icon:'person-outline', onPress: () => {handleNavigate('Profile', user)}},
-        {id:2, title: 'Ürünlerim', icon:'cart-outline', onPress: () => {handleNavigate('MyProducts')}},
-        {id:3, title: 'Ayarlar', icon:'settings-outline', onPress: () => {handleNavigate('Settings')}},
+    
+
+      const mainMenu = [
+          {id:1, title: 'Profilim', icon:'person-outline', onPress: () => {handleNavigate('Settings', user)}},
+          {id:2, title: 'Ürünlerim', icon:'cart-outline', onPress: () => {handleNavigate('MyProducts', user)}},
+          {id:3, title: 'Favorilerim', icon:'heart-outline', onPress: () => {handleNavigate('Favorites', user)}},
         
     ]
-
+    
     const aboutMenu = [
-        {id:1, title: 'Hakkında', icon:'ios-ellipsis-horizontal-outline', onPress: () => {handleNavigate('')}},
+        {id:1, title: 'Hakkında', icon:'md-information-circle-outline', onPress: () => {handleNavigate('About')}},
       /*   {id:2, title: 'Yardım', icon:'ios-bandage-outline', onPress: () => {handleNavigate('')}}, */
-        {id:3, title: 'Sıkça Sorulan Sorular', icon:'ios-help-outline', onPress: () => {handleNavigate('')}},
-        {id:4, title: 'Geri Bildirim', icon:'ios-checkmark-done-circle-outline', onPress: () => handleSignOut},
-        {id:5, title: 'Çıkış Yap', icon:'ios-exit-outline', onPress: () => handleSignOut},
-
+        {id:3, title: 'Geri Bildirim', icon:'chatbubble-ellipses-outline', onPress: () => {handleNavigate('Feedback', user)}},
+        {id:4, title: 'Hesabımı Sil', icon:'md-person-remove-outline',  onPress: () => deleteAccount()},
+        {id:5, title: 'Çıkış Yap', icon:'ios-exit-outline', onPress: () => signOut()},
     ]
 
-    const handleSignOut = () => {
-        authentication.signOut();
-        dispatch(removeUser());
+    const signOut =async () => {
+        Alert.alert(
+            "Oturumu Kapat",
+            "Hesabınızdan çıkış yapmak istediğinize emin misiniz?",
+            [
+                {
+                    text: "Çıkış Yap",
+                    onPress: () => authentication.signOut()
+                },
+                {
+                    text: "Vazgeç",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+            ]
+        );
+        
+    }
+
+    const deleteAccount =async () => {
+        Alert.alert(
+            "Hesabınız Kalıcı Olarak Silinecek",
+            "Hesabınızı kalıcı olarak silmek istediğinize emin misiniz?",
+            [
+                {
+                    text: "Hesabımı Sil",
+                    onPress: () =>{
+                        database.user.deleteAccount(user.uid);
+                        authentication.deleteAccount();
+                    }
+                },
+                {
+                    text: "Vazgeç",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+            ]
+        );
+        
     }
 
     const handleNavigate =(route, params) => {
         navigation.navigate(route, params);
     }
-    
 
     return (  
         <View style={styles.container}>
@@ -52,7 +97,7 @@ const Account = ({navigation}) => {
                             />
                             :
                             <View style={styles.defaultProfileImgContainer} >
-                                <Text style={styles.defaultProfileImgText}>{user.name.charAt(0)+user.surname.charAt(0)}</Text>
+                                <Text style={styles.defaultProfileImgText}>{user?.name.charAt(0).toUpperCase()+user?.surname.charAt(0).toUpperCase()}</Text>
                             </View>
                         }
                     </View>
